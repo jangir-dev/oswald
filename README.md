@@ -1,2 +1,2 @@
-# oswald
+# OSWALD
 Voice assistent Oswald.
