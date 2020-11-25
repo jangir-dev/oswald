@@ -1,0 +1,6 @@
+pyowm
+pyttsx3
+SpeechRecognition
+PyAudio
+playsound
+fuzzywuzzy
