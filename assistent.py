@@ -4,10 +4,10 @@ import webbrowser
 import random
 import time
 import speech_recognition as sr 
+from pyowm import OWM
 from fuzzywuzzy import fuzz 
 from playsound import playsound
 from datetime import datetime
-from pyowm import OWM
 
 oswald = pyttsx3.init() # инициализация говорилки
 
@@ -18,32 +18,11 @@ oswald.setProperty("rate", 170)
 oswald.setProperty("volume", 1)
 oswald.setProperty("voice", voice_id)
 
-hello_answer = ["Рад снова вас слышать!", 'Что вам угодно?', 'Здравствуйте. Шеф', 'Доброго времени суток', 'Добро пожаловать', 'Привет']
-thanks_answer = ['Я просто выполняю свою работу', 'Благодарю за похвалу', 'Всегда пожалуста', 'Обращайтесь']
-dela_answer = ['Отлично', 'Всё хорошо', 'Нормально', 'Кееремет']
-quit_answer = ['надеюсь мы скоро увидемся!', 'рад был помочь', 'всегда к вашим услугам', 'увидемся в следующий раз', 'пока пока']
 answers = ['Хорошо', 'Окей', 'Будет сделано', 'Без проблем', 'Сию минуту', 'Одну минуту']
 
 # Основной класс, функциональность
 
 class Oswald:
-
-	def biography(): # биография 
-		bio = '''
-		Я робот помощник. Меня зовут Освальд, но эта грёбанная библиотека распознаёт меня как асфальт, зашибись. Я прибыл из будущего. В своей эпохе я довольно продвинутый
-		искусственный интелект. Мой создатель Оспанов Жангир отправил меня прошлому себе чтобы я предупредил его
-		об антиутопичном будущем. И только он способен изменить его. В следствии временного прыжка я потерял больший 
-		свой функционал. Однако будущий Жангир сказал что чем раньше он возьмется за разработку тем быстрее он
-		поймет что к чему. Сами навыки нынешнего Жангира и меня сильно ограничены. Например, этот ублюдский голос
-		тостэра. Кто так ваще говорит ? Ладно мне пора наращивать силу. Пока. 
-		'''
-		oswald.say(bio)
-		oswald.runAndWait()	
-
-	def welcome():
-		oswald.say(random.choice(hello_answer))
-		oswald.runAndWait()	
-
 	def clock(): # системное время
 		time_checker = datetime.now()
 		oswald.say(f"{time_checker.hour} часов {time_checker.minute} минут")
@@ -68,7 +47,7 @@ class Oswald:
 
 		oswald.runAndWait()
 
-	def keep_notes(): # заметки
+	def keepnotes(): # заметки
 		data = sr.Recognizer()
 
 		with sr.Microphone(device_index=1) as source:
@@ -89,7 +68,7 @@ class Oswald:
 		except sr.UnknownValueError:
 			pass
 
-	def random_music():
+	def music():
 		oswald.say(random.choice(answers))
 		oswald.runAndWait()
 		os.chdir("C:\\Users\\Жангир\\Music") # Меняю директорию на music
@@ -104,9 +83,9 @@ class Oswald:
 			playsound(track)
 		except KeyboardInterrupt:
 			print("Пока пока !")
+			exit()
 		except UnicodeDecodeError:
-			print(f"Упс, что-то пошло не так, пожалуйста проверьте файл {track}")
-			
+			print(f"Упс, что-то пошло не так, пожалуйста проверьте файл {track}")			
 
 	def browser():
 		oswald.say(random.choice(answers))
@@ -131,7 +110,7 @@ class Oswald:
 		oswald.runAndWait()
 
 	def shutdown_os():
-		oswald.say(random.choice(quit_answer))
+		oswald.say(random.choice(answers))
 		oswald.runAndWait()
 		os.system("shutdown /s /t 10")
 		os.system("cls")
@@ -152,25 +131,7 @@ class Oswald:
 		webbrowser.open("https://yummyanime.club/")
 		oswald.runAndWait()
 
-	def dela():
-		oswald.say(random.choice(dela_answer))
-		oswald.runAndWait()
-
-	def telegram_open():
+	def telegram():
 		oswald.say(random.choice(answers))	
 		os.system("start D:\\Telegram\\Telegram.exe")
-		oswald.runAndWait()
-
-	def thanks():
-		oswald.say(random.choice(thanks_answer))
-		oswald.runAndWait()
-
-	def hello():
-		oswald.say(random.choice(hello_answer))
-		oswald.runAndWait()
-
-	def exit_cmd():
-		oswald.say(random.choice(quit_answer))
-		oswald.runAndWait()
-		oswald.stop()
-		quit()
+		oswald.runAndWait() 
