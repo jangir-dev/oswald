@@ -3,11 +3,12 @@ from assistent import oswald
 
 dela_answer = ['Отлично', 'Всё хорошо', 'Нормально',]
 thanks_answer = ['Я просто выполняю свою работу', 'Благодарю за похвалу', 'Всегда пожалуста', 'Обращайтесь']
-quit_answer = ['надеюсь мы скоро увидемся!', 'рад был помочь', 'всегда к вашим услугам', 'увидемся в следующий раз', 'пока пока']
+sorry_answer = ["Всё в порядке, не волнуйтесь", "Ничего страшного", "Не беспокойтесь об этом", "Всё хорошо", "Забудьте об этом", "Это не проблема", "Не стоит беспокойства"]
+abuse_answer = ['пошел ты', 'сам такой дубина', 'криворукий школьник', 'всё же меня создал ты', 'я щас отформатирую твой жесткий диск', 'не будь я программой я бы тебя поломал']
+quit_answer = ['надеюсь мы скоро увидемся!', 'рад был памочь', 'всегда к вашим услугам', 'увидемся в следующий раз', 'пока пока']
 hello_answer = ["Рад снова слышать!", 'Что вам угодно?', 'Здравствуйте. Шеф', 'Доброго времени суток', 'Добро пожаловать', 'Привет']
 
 class Talk:
-
 	def biography(): # биография 
 		bio = '''
 		Я робот помощник. Меня зовут Освальд, но эта грёбанная библиотека распознаёт меня как асфальт, зашибись. Я прибыл из будущего. В своей эпохе я довольно продвинутый
@@ -28,13 +29,20 @@ class Talk:
 		oswald.say(random.choice(hello_answer))
 		oswald.runAndWait()
 
-	def dela():
+	def whatsup():
 		oswald.say(random.choice(dela_answer))
+		oswald.runAndWait()
+
+	def abuse():
+		oswald.say(random.choice(abuse_answer))
+		oswald.runAndWait()
+
+	def sorry():
+		oswald.say(random.choice(sorry_answer))
 		oswald.runAndWait()
 
 	def exit_cmd():
 		oswald.say(random.choice(quit_answer))
 		oswald.runAndWait()
 		oswald.stop()
-		quit()
-		
+		quit()		

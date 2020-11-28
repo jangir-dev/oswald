@@ -1,99 +1,100 @@
+import threading
 import speech_recognition as sr
-import time
+from talk import Talk 
 from fuzzywuzzy import fuzz
 from assistent import Oswald
-from talk import Talk 
 
-alias = ['асфальт', "бро", "бра", "друг",  "асфальтик", "асфальтыч", 'не мог бы ты', 'пожалуйста', "скажи", "найди"]
-
+alias = ['асфальт', "бро", "бра", "друг",  "асфальтик", "асфальтыч", 'будь добр', 'пожалуйста', "скажи", "найди"]
 read_data = sr.Recognizer() # инициализирую объект который распознает речь
-
 cmds = {
-	"hello":("привет", "асфальт", "бро", "братан", "эй ты", "здарова", "здравствуй", "приветик",),
-	"dela": ("как дела", "как поживаешь","как жизнь"),
-	"clock":("текущее время", "время", "который час", "системное время", "часы"),
-	"music":("музыка", "вруби музыку", "аудиоплеер", "рандомная песня"),
-	"weather":("погода", "текущая погода", "температура на улице", "какая погода"),
+	# общение
+	"hello":("привет", "асфальт", "здорово", "бро", "братан", "эй ты","здравствуй", "приветик",),
+	"exit": ("пока","пока-пока"),
+	"whatsup": ("как дела", "как поживаешь","как жизнь"),
+	"abuse": ("дубина", "пошел нахуй", "пидор", "идиот",),
+	"thanks":("спасибо", "спасибки", "благодарю", "спасибо бро"),
 	"biography": ("биография", "кто ты", "твоя история", "расскажи о себе",),
+	"sorry":("извини", "ладно прости"),
+	# функционал
+	"news": ("последние новости",),
+	"clock":("текущее время", "время", "который час", "системное время",),
+	"music":("музыка", "вруби музыку", "аудиоплеер", "рандомная песня"),
+	"weather":("погода", "текущая погода", "температура на улице", "какая погода"),	
 	"browser": ("открой браузер", "браузер", "открой интернет"),
 	"youtube": ("открой youtube", "youtube",),
-	"shutdown_os": ("выруби комп", "выключи компьютер"),
+	"currency_rate": ("текущий курс",),
+	"shutdown_os": ("выключи компьютер", "выключи комп"),
 	"kino": ("кино", "включи кино"),
 	"anime": ("аниме", "включи аниме", "открой аниме"),
-	'telegram': ("открой телегу", ),
-	'thanks':('спасибо', 'спасибки', 'благодарю', 'спасибо бро'),
-	'keepnotes': ('запиши в заметках', 'запиши в блокноте', 'сделай заметку'),
-	'web_browse': ('найди в интернете', 'поищи в интернете','поищи в сети',),
-	'exit': ('пока', 'закройся', 'уйди',),
+	"telegram": ("открой телегу", "telegram"),
+	"keepnotes": ("запиши в заметках", "запиши в блокноте", "запиши заметку"),
+	"web_browse": ("найди в интернете", "поищи в интернете","поищи в сети",),
 }
 
-# функция для замены не нужных фраз 
-def replace_phrase(text): 
-	for phrase in alias:
-		text = text.replace(phrase, '').strip()
-		text = text.replace('  ', ' ').strip()
-		return text
+class Waiter:
+	# функция для замены не нужных фраз 
+	def replace_phrase(text): 
+		for phrase in alias:
+			text = text.replace(phrase, '').strip()
+			text = text.replace('  ', ' ').strip()
+			return text
 
-# функция сравнения запроса и элементов в словаре
-def comparison(query, cmds_item):
-	
-		for i in cmds[cmds_item]:
-	
-			comparison_value = fuzz.ratio(query, i)
+	# функция сравнения запроса и элементов в словаре
+	def comparison(query, cmds_item):	
+			for item in cmds[cmds_item]:
+				comparison_value = fuzz.ratio(query, item)
 
-			if comparison_value >= 60:
-				return True
-			else:
-				return False
+				if comparison_value >= 70:
+					return True
+				else:
+					return False
 
+	def response(execute_item):
+			cmds_methods = {
+				"news": Oswald.news,				  "biography": Talk.biography,
+				"clock": Oswald.clock,                "thanks": Talk.thanks,
+				"music": Oswald.music,				  "hello": Talk.hello,					
+				"kino": Oswald.kino,				  "whatsup": Talk.whatsup,
+				"anime": Oswald.anime, 				  "exit": Talk.exit_cmd,
+				"weather": Oswald.weather,            "abuse": Talk.abuse,
+				"browser": Oswald.browser,            "sorry": Talk.sorry,
+				"youtube": Oswald.youtube,            
+				"telegram": Oswald.telegram,
+				"keepnotes": Oswald.keepnotes,
+				"web_browse": Oswald.web_browse,
+				"shutdown_os":  Oswald.shutdown_os,
+				"currency_rate": Oswald.currency_rate,
+			}
+			
+			# пробегаемся по списку с функциями, если функцию подходит переданному значению то вызываем метод
+			for item in cmds_methods: 
+				if item == execute_item:
+					cmds_methods[item]()
 
-def response(execute_item):
-		cmds_methods = {
-			"clock": Oswald.clock,
-			"music": Oswald.music,
-			"kino": Oswald.kino,
-			"anime": Oswald.anime,
-			"weather": Oswald.weather,
-			"browser": Oswald.browser,
-			"youtube": Oswald.youtube,
-			"shutdown_os":  Oswald.shutdown_os,
-			'telegram': Oswald.telegram,
-			'keepnotes': Oswald.keepnotes,
-			'web_browse': Oswald.web_browse,
-			"biography": Talk.biography, 
-			'thanks': Talk.thanks,
-			"hello": Talk.hello,
-			"dela": Talk.dela,
-			'exit': Talk.exit_cmd,
-		}
+	# сам интерфейс
+	def waiter():
+		# прослушиваем микрофон и даем ему имя source
+		with sr.Microphone(device_index=1) as source: 
+			print("Running...")
+			read_data.adjust_for_ambient_noise(source)
+			audio_data = read_data.listen(source, phrase_time_limit=5)
 
-		# пробегаемся по списку с функциями, если функцию подходит переданному значению то вызываем метод
-		
-		for i in cmds_methods: 
-			if i == execute_item:
-				cmds_methods[i]()
+		try:
+			query = Waiter.replace_phrase(read_data.recognize_google(audio_data, language="ru-RU"))
+			query = query.lower()
+			
+			print(query)
 
-# сам интерфейс
-def waiter():
-	# прослушиваем микрофон и даем ему имя source
-	with sr.Microphone(device_index=1) as source: 
-		print("Running...")
-		read_data.adjust_for_ambient_noise(source)
-		audio_data = read_data.listen(source, phrase_time_limit=5)
+			for item in cmds:
+				if Waiter.comparison(query, item):
+					Waiter.response(item)
+		except (sr.UnknownValueError):
+			pass
+		except (UnboundLocalError):
+			pass	
 
-	try:
-		query = replace_phrase(read_data.recognize_google(audio_data, language="ru-RU"))
-		query = query.lower()
-		print(query)
-	except (sr.UnknownValueError):
-		pass	
-
- 	# пробегаемся по словарю cmds, проверяем текст и если условие верно то вызываем метод и передаем имя кортежа
-
-	for i in cmds:
-		if comparison(query, i):
-			response(i)
 try:
-	waiter()
+	while True:
+		Waiter.waiter()
 except KeyboardInterrupt:
 	exit()

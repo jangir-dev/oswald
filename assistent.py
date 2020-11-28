@@ -1,20 +1,22 @@
 import os
-import pyttsx3
-import webbrowser
-import random
 import time
+import random
+import pyttsx3
+import requests
+import webbrowser
 import speech_recognition as sr 
 from pyowm import OWM
 from fuzzywuzzy import fuzz 
-from playsound import playsound
 from datetime import datetime
+from playsound import playsound
+from bs4 import BeautifulSoup
 
 oswald = pyttsx3.init() # инициализация говорилки
 
 voice_id = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech\\Voices\\TokenEnums\\RHVoice\\Aleksandr"
 
 # настройки синтеза речи
-oswald.setProperty("rate", 170)
+oswald.setProperty("rate", 180)
 oswald.setProperty("volume", 1)
 oswald.setProperty("voice", voice_id)
 
@@ -25,7 +27,7 @@ answers = ['Хорошо', 'Окей', 'Будет сделано', 'Без пр
 class Oswald:
 	def clock(): # системное время
 		time_checker = datetime.now()
-		oswald.say(f"{time_checker.hour} часов {time_checker.minute} минут")
+		oswald.say(f"Сейчас {time_checker.hour} {time_checker.minute}")
 		oswald.runAndWait()
 
 	def weather(): # погода
@@ -59,7 +61,7 @@ class Oswald:
 			content = data.recognize_google(content_data, language="ru-RU")
 			print(content)
 
-			with open('notes.txt', "w") as notes:
+			with open('notes.txt', "a") as notes:
 				notes.write(f'{content} \n')
 				notes.close()
 
@@ -97,7 +99,7 @@ class Oswald:
 
 		with sr.Microphone(device_index=1) as source:
 			data.adjust_for_ambient_noise(source)
-			oswald.say("Что мне искать ?")
+			print("говорите...")
 			content_data = data.listen(source, phrase_time_limit=5) 
 
 		try:
@@ -107,12 +109,10 @@ class Oswald:
 		except sr.UnknownValueError:
 			pass
 
-		oswald.runAndWait()
-
 	def shutdown_os():
 		oswald.say(random.choice(answers))
 		oswald.runAndWait()
-		os.system("shutdown /s /t 10")
+		os.system("shutdown /s /t 30")
 		os.system("cls")
 		quit()
 
@@ -135,3 +135,35 @@ class Oswald:
 		oswald.say(random.choice(answers))	
 		os.system("start D:\\Telegram\\Telegram.exe")
 		oswald.runAndWait() 
+
+	def currency_rate():
+		URL = "https://yandex.kz/"	
+		HEADERS = {
+			"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36"
+		}
+
+		query = requests.get(URL, headers = HEADERS)
+		soup = BeautifulSoup(query.content, "html.parser")
+
+		items = soup.findAll("span", class_="inline-stocks__value_inner")
+
+		oswald.say(f"Нынешний курс доллара сейчас составляет {items[0].get_text(strip=True)} тенге.")
+		oswald.say(f"Нынешний курс евро сейчас составляет {items[1].get_text(strip=True)} тенге.")
+		oswald.say(f"Нынешний курс рубля сейчас составляет {items[2].get_text(strip=True)} тенге.")
+
+		oswald.runAndWait()
+
+	def news(): #последние новости
+		URL = "https://tengrinews.kz/"
+		HEADERS = {
+			"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36"
+		}
+
+		query = requests.get(URL, headers = HEADERS)
+		soup = BeautifulSoup(query.content, "html.parser")
+
+		latest_news = soup.findAll("span", class_="tn-main-news-title")
+
+		for news in latest_news:
+			oswald.say(f"{news.get_text(strip=True)} \n")
+			oswald.runAndWait()
