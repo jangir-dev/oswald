@@ -1,5 +1,4 @@
 import os
-import time
 import random
 import pyttsx3
 import requests
@@ -109,13 +108,6 @@ class Oswald:
 		except sr.UnknownValueError:
 			pass
 
-	def shutdown_os():
-		oswald.say(random.choice(answers))
-		oswald.runAndWait()
-		os.system("shutdown /s /t 30")
-		os.system("cls")
-		quit()
-
 	def youtube():
 		oswald.say(random.choice(answers))
 		webbrowser.open("https://youtube.com/")
@@ -148,8 +140,8 @@ class Oswald:
 		items = soup.findAll("span", class_="inline-stocks__value_inner")
 
 		oswald.say(f"Нынешний курс доллара сейчас составляет {items[0].get_text(strip=True)} тенге.")
-		oswald.say(f"Нынешний курс евро сейчас составляет {items[1].get_text(strip=True)} тенге.")
-		oswald.say(f"Нынешний курс рубля сейчас составляет {items[2].get_text(strip=True)} тенге.")
+		oswald.say(f"Евро сейчас стоит {items[1].get_text(strip=True)} тенге.")
+		oswald.say(f"Рубль сейчас по {items[2].get_text(strip=True)} тенге.")
 
 		oswald.runAndWait()
 
@@ -167,3 +159,23 @@ class Oswald:
 		for news in latest_news:
 			oswald.say(f"{news.get_text(strip=True)} \n")
 			oswald.runAndWait()
+
+	def system_clear():
+		oswald.say("Начинаю очистку.")
+		oswald.runAndWait()
+		os.system("c:\\windows\\SYSTEM32\\cleanmgr.exe /dC:")
+		os.system("c:\\windows\\SYSTEM32\\cleanmgr.exe /dD:")
+		os.system("ipconfig /flushdns") # очистка ДНС
+
+	def restart_os():
+		oswald.say(random.choice(answers))
+		oswald.runAndWait()
+		os.system("shutdown /r /t 60")
+		quit()
+
+	def shutdown_os():
+		oswald.say(random.choice(answers))
+		oswald.runAndWait()
+		os.system("shutdown /s /t 60")
+		os.system("cls")
+		quit()

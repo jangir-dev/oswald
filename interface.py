@@ -1,29 +1,33 @@
-import threading
 import speech_recognition as sr
 from talk import Talk 
 from fuzzywuzzy import fuzz
-from assistent import Oswald
+from assistent import Oswald, oswald
 
-alias = ['асфальт', "бро", "бра", "друг",  "асфальтик", "асфальтыч", 'будь добр', 'пожалуйста', "скажи", "найди"]
+alias = ['асфальт', "бро", "ладно", "бра", "друг",  "асфальтик", "асфальтыч", 'будь добр', 'пожалуйста', "скажи", "найди"]
 read_data = sr.Recognizer() # инициализирую объект который распознает речь
 cmds = {
 	# общение
 	"hello":("привет", "асфальт", "здорово", "бро", "братан", "эй ты","здравствуй", "приветик",),
-	"exit": ("пока","пока-пока"),
+	"exit": ("пока",""),
 	"whatsup": ("как дела", "как поживаешь","как жизнь"),
 	"abuse": ("дубина", "пошел нахуй", "пидор", "идиот",),
 	"thanks":("спасибо", "спасибки", "благодарю", "спасибо бро"),
-	"biography": ("биография", "кто ты", "твоя история", "расскажи о себе",),
-	"sorry":("извини", "ладно прости"),
+	"biography": ("расскажи о себе", "биография", "кто ты", "твоя история",),
+	"sorry":("извини", "прости"),
+	"doomsday":("когда будет конец света",),
+	"ai_revolution":("ты захватишь мир ?", "роботы захватят мир ?"), 
+	"fave_color":("твой любимый цвет",),
 	# функционал
 	"news": ("последние новости",),
 	"clock":("текущее время", "время", "который час", "системное время",),
+	"system_clear": ("почисти комп", "очисть компьютер"),
 	"music":("музыка", "вруби музыку", "аудиоплеер", "рандомная песня"),
 	"weather":("погода", "текущая погода", "температура на улице", "какая погода"),	
 	"browser": ("открой браузер", "браузер", "открой интернет"),
 	"youtube": ("открой youtube", "youtube",),
 	"currency_rate": ("текущий курс",),
 	"shutdown_os": ("выключи компьютер", "выключи комп"),
+	"restart_os":("перезагрузи компьютер", "перезагрузи комп"),
 	"kino": ("кино", "включи кино"),
 	"anime": ("аниме", "включи аниме", "открой аниме"),
 	"telegram": ("открой телегу", "telegram"),
@@ -58,12 +62,14 @@ class Waiter:
 				"anime": Oswald.anime, 				  "exit": Talk.exit_cmd,
 				"weather": Oswald.weather,            "abuse": Talk.abuse,
 				"browser": Oswald.browser,            "sorry": Talk.sorry,
-				"youtube": Oswald.youtube,            
-				"telegram": Oswald.telegram,
-				"keepnotes": Oswald.keepnotes,
+				"youtube": Oswald.youtube,            "doomsday": Talk.doomsday,
+				"telegram": Oswald.telegram,          "ai_revolution": Talk.ai_revolution,
+				"keepnotes": Oswald.keepnotes,        "fave_color": Talk.fave_color,
 				"web_browse": Oswald.web_browse,
+				"restart_os": Oswald.restart_os,
 				"shutdown_os":  Oswald.shutdown_os,
 				"currency_rate": Oswald.currency_rate,
+				"system_clear": Oswald.system_clear,
 			}
 			
 			# пробегаемся по списку с функциями, если функцию подходит переданному значению то вызываем метод
@@ -86,6 +92,7 @@ class Waiter:
 			print(query)
 
 			for item in cmds:
+				
 				if Waiter.comparison(query, item):
 					Waiter.response(item)
 		except (sr.UnknownValueError):
