@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 
 oswald = pyttsx3.init() # инициализация говорилки
 
-voice_id = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech\\Voices\\TokenEnums\\RHVoice\\Aleksandr"
+voice_id = r"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\TokenEnums\RHVoice\Pavel"
 
 # настройки синтеза речи
 oswald.setProperty("rate", 180)
@@ -53,9 +53,9 @@ class Oswald:
 
 		with sr.Microphone(device_index=1) as source:
 			data.adjust_for_ambient_noise(source)
-			print("start")
+			oswald.say("говорите")
 			content_data = data.listen(source, phrase_time_limit=5) 
-
+			oswald.runAndWait()
 		try:
 			content = data.recognize_google(content_data, language="ru-RU")
 			print(content)
@@ -72,7 +72,7 @@ class Oswald:
 	def music():
 		oswald.say(random.choice(answers))
 		oswald.runAndWait()
-		os.chdir("C:\\Users\\Жангир\\Music") # Меняю директорию на music
+		os.chdir(r"C:\Users\Жангир\Music") # Меняю директорию на music
 
 		music = os.listdir()
 
@@ -98,8 +98,9 @@ class Oswald:
 
 		with sr.Microphone(device_index=1) as source:
 			data.adjust_for_ambient_noise(source)
-			print("говорите...")
 			content_data = data.listen(source, phrase_time_limit=5) 
+			oswald.say("принято")
+			oswald.runAndWait()
 
 		try:
 			content = data.recognize_google(content_data, language="ru-RU")
@@ -125,16 +126,17 @@ class Oswald:
 
 	def telegram():
 		oswald.say(random.choice(answers))	
-		os.system("start D:\\Telegram\\Telegram.exe")
+		os.system(r"start D:\Telegram\Telegram.exe")
 		oswald.runAndWait() 
 
 	def currency_rate():
 		URL = "https://yandex.kz/"	
-		HEADERS = {
+
+		HEADER = {
 			"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36"
 		}
 
-		query = requests.get(URL, headers = HEADERS)
+		query = requests.get(URL, headers = HEADER)
 		soup = BeautifulSoup(query.content, "html.parser")
 
 		items = soup.findAll("span", class_="inline-stocks__value_inner")
@@ -147,11 +149,10 @@ class Oswald:
 
 	def news(): #последние новости
 		URL = "https://tengrinews.kz/"
-		HEADERS = {
+		HEADER = {
 			"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36"
 		}
-
-		query = requests.get(URL, headers = HEADERS)
+		query = requests.get(URL, headers = HEADER)
 		soup = BeautifulSoup(query.content, "html.parser")
 
 		latest_news = soup.findAll("span", class_="tn-main-news-title")
@@ -163,8 +164,8 @@ class Oswald:
 	def system_clear():
 		oswald.say("Начинаю очистку.")
 		oswald.runAndWait()
-		os.system("c:\\windows\\SYSTEM32\\cleanmgr.exe /dC:")
-		os.system("c:\\windows\\SYSTEM32\\cleanmgr.exe /dD:")
+		os.system(r"c:\windows\SYSTEM32\cleanmgr.exe /dC:")
+		os.system(r"c:\windows\SYSTEM32\cleanmgr.exe /dD:")
 		os.system("ipconfig /flushdns") # очистка ДНС
 
 	def restart_os():

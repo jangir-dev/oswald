@@ -7,16 +7,19 @@ alias = ['асфальт', "бро", "ладно", "бра", "друг",  "ас�
 read_data = sr.Recognizer() # инициализирую объект который распознает речь
 cmds = {
 	# общение
-	"hello":("привет", "асфальт", "здорово", "бро", "братан", "эй ты","здравствуй", "приветик",),
+	"hello":("доброе утро", "привет","бро", "здравствуй", "приветик",),
 	"exit": ("пока",""),
 	"whatsup": ("как дела", "как поживаешь","как жизнь"),
-	"abuse": ("дубина", "пошел нахуй", "пидор", "идиот",),
+	"abuse": ("дубина", "п****",),
 	"thanks":("спасибо", "спасибки", "благодарю", "спасибо бро"),
 	"biography": ("расскажи о себе", "биография", "кто ты", "твоя история",),
 	"sorry":("извини", "прости"),
+	"quote":("цитата дня",),
 	"doomsday":("когда будет конец света",),
 	"ai_revolution":("ты захватишь мир ?", "роботы захватят мир ?"), 
 	"fave_color":("твой любимый цвет",),
+	"fairy_tail":("расскажи сказку", "почитай сказку"),
+	"sing":("ты умеешь петь"),
 	# функционал
 	"news": ("последние новости",),
 	"clock":("текущее время", "время", "который час", "системное время",),
@@ -65,9 +68,9 @@ class Waiter:
 				"youtube": Oswald.youtube,            "doomsday": Talk.doomsday,
 				"telegram": Oswald.telegram,          "ai_revolution": Talk.ai_revolution,
 				"keepnotes": Oswald.keepnotes,        "fave_color": Talk.fave_color,
-				"web_browse": Oswald.web_browse,
-				"restart_os": Oswald.restart_os,
-				"shutdown_os":  Oswald.shutdown_os,
+				"web_browse": Oswald.web_browse,      "fairy_tail": Talk.fairy_tail,
+				"restart_os": Oswald.restart_os,      "sing": Talk.sing,
+				"shutdown_os":  Oswald.shutdown_os,   "quote": Talk.quote,
 				"currency_rate": Oswald.currency_rate,
 				"system_clear": Oswald.system_clear,
 			}
@@ -95,12 +98,15 @@ class Waiter:
 				
 				if Waiter.comparison(query, item):
 					Waiter.response(item)
+					
 		except (sr.UnknownValueError):
 			pass
 		except (UnboundLocalError):
 			pass	
 
 try:
+	oswald.say("Готов выполнять свою работу")
+	oswald.runAndWait()
 	while True:
 		Waiter.waiter()
 except KeyboardInterrupt:
